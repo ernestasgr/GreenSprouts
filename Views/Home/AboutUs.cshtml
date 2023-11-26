@@ -1,0 +1,180 @@
+@{
+    ViewData["Title"] = "About us";
+}
+
+<style>
+    footer{
+        font-family: var(--bs-body-font-family);
+    }
+</style>
+
+
+<style>
+    header{
+        font-family: Arial, Helvetica, sans-serif;
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/darcula.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/clike/clike.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            color: white;
+            background: #357266;
+            font-family: 'Kanit', sans-serif;
+            font-weight: 200;
+            background-image: url(/images/waves.svg);
+            background-repeat: no-repeat;
+            background-position: top;
+            background-size: contain;
+            background-attachment: scroll;
+        }
+        section{
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 25px;
+            padding: 25px;
+        }
+        h2{
+            margin-top: 13px;
+            align-items: center;
+            border: 2px solid white;
+            font-family: 'Kanit', sans-serif;
+            font-weight: bold;
+            font-size: 77px;
+            padding: 1px;
+            color: white;
+        }
+        h1{
+            align-items: top;
+            font-size: 18px;
+            font-family: 'Kanit', sans-serif;
+            font-weight: bold;
+            
+        }
+        h3{
+            font-family: 'Kanit', sans-serif;
+            font-weight: bold;
+            font-size: 50px;
+        }
+        p{
+            font-size: 20px;
+            text-align: center;
+        }
+        p1{
+            font-style: oblique;
+            margin-bottom: 10px;
+        }
+        p2{
+            font-weight: bold;
+            align-items: center;
+        }
+        
+    .spacer {
+                aspect-ratio: 960/300;
+                width: 100%;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+            
+        .layer1 {
+            background-image: url(/images/waves.svg);
+        }
+
+    img {
+        border-radius: 50%;
+        height: 225px;
+        width: 225px;
+        border: 5px;
+        border-color: white;
+        align-items: center;
+    }
+
+    .column {
+        float: left;
+        width: 33.3%;
+        padding: 20px;
+    }
+    </style>
+
+</head>
+<body>
+    
+    <section>
+        <h2>GREENSPROUTS.</h2>
+        <p1>TIME TO GO GREEN!</p1>
+    </section>
+    <section>
+        <h3>Welcome!</h3>
+        <p>We are a group of Kaunas University of Technology students dedicated to help people become more aware of the environmental impact that their programming decision can have.</p>        
+    </section>
+    <section>
+        <u><h3>OUR GOALS:</h3></u>
+        <p>Raise Awareness</p>
+        <p>Promote Green Coding</p>
+        <p>Give Green Technology News and Updates</p>     
+        <p>Provide Learning Resources</p>      
+    </section>
+    <section>
+        <u><h3>WHY GREEN PROGRAMMING?</h3></u>
+        <p>Software development and usage have a significant carbon footprint. By adopting green programming practices, developers can minimize energy consumption, reduce carbon emissions, and contribute to mitigating climate change.</p>        
+    </section>
+    <section>
+        <u><h3>OUR TEAM</h3></u>
+        <div class="row">
+            <div class="column">
+                <div><img src="/images/usericon.png" alt="Avatar"></div> 
+                <h1>Tomas Jonikas</h1>
+            </div>
+            <div class="column">
+                <div><img src="/images/usericon.png" alt="Avatar"></div> 
+                <h1>Vėjas Špakauskas</h1>
+            </div>
+            <div class="column">
+                <div><img src="/images/usericon.png" alt="Avatar"></div> 
+                <h1>Gilbertas Stankus</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <div><img src="/images/usericon.png" alt="Avatar"></div>  
+                <h1>Vytautas Šablinskas</h1>
+            </div>
+            <div class="column">
+                <div><img src="/images/usericon.png" alt="Avatar"></div> 
+                <h1>Ernestas Grubis</h1>
+            </div>
+            <div class="column">
+                <div><img src="/images/usericon.png" alt="Avatar"></div> 
+                <h1>Deividas Lingė</h1>
+            </div>
+        </div>       
+    </section>
+    <section>
+        <h1></h1>
+        <p></p>        
+    </section>
+</body>
+</html>
+

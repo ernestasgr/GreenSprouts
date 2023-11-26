@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  test:
+    image: pvpacr.azurecr.io/test
+    container_name: test
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - AZURE_CLIENT_ID=REDACTED
+      - AZURE_CLIENT_SECRET=REDACTED
+      - AZURE_SUBSCRIPTION_ID=REDACTED
+      - AZURE_TENANT_ID=REDACTED
+    ports:
+      - 80:80
+      - 443:443
+    restart: always

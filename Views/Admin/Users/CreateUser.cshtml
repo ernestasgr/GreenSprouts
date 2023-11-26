@@ -1,0 +1,70 @@
+@{
+    ViewData["Title"] = "Create User";
+}
+
+@model AccountViewModel
+@inject AppDbContext _context
+
+@section header {
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GREENSPROUTS.</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Users">Back to Users page</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+}
+
+<h2>Create User</h2>
+
+<form asp-controller="Admin" asp-action="CreateUser" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label asp-for="Nickname" class="control-label"></label>
+        <input asp-for="Nickname" class="form-control" />
+        <span asp-validation-for="Nickname" class="text-danger"></span>
+    </div><br>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div><br>
+    <div class="form-group">
+        <label asp-for="Hash" class="control-label"></label>
+        <input asp-for="Hash" class="form-control" />
+        <span asp-validation-for="Hash" class="text-danger"></span>
+    </div><br>
+    <div class="form-group">
+        <label asp-for="Role" class="control-label">Role</label>
+        <select asp-for="Role" class="form-control">
+            <option value="">Select a role</option>
+            @foreach (var role in _context.Roles.Distinct())
+            {
+                <option value="@role.Id">@role.Role</option>
+            }
+        </select>
+        <span asp-validation-for="Role" class="text-danger"></span>
+    </div><br>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-success" />
+        <a asp-action="Users" asp-controller="Admin" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

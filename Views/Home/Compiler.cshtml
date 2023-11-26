@@ -1,0 +1,182 @@
+@{
+    ViewData["Title"] = "Compiler";
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/darcula.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/clike/clike.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<div id="code-area"></div>
+
+<script>
+    var startingCode =
+    `#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    cout << "Hello world!\\n";
+}`
+
+    var editor = CodeMirror(document.getElementById('code-area'), {
+        lineNumbers: true,
+        value: startingCode,
+        theme: 'darcula',
+        mode: 'text/x-c++src',
+        autoCloseBrackets: true,
+        indentUnit: 4
+    });
+
+    function showCode()
+    {
+        var text = editor.getValue();
+        $.ajax({
+            url: "/Home/ShowCode",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(text),
+            success: function (mydata) {
+                $("#divResult").html(mydata);
+            }
+        })
+    }
+
+    function sendCodeToVM() {
+        // Create a WebSocket connection to the Azure VM
+        var socket = new WebSocket("20.166.77.219");
+
+        // When the WebSocket connection is open, send a message to the server
+        socket.onopen = function(event) {
+            socket.send("Hello, VM!");
+        };
+
+        // When the WebSocket connection receives a message from the server, log it to the console
+        socket.onmessage = function(event) {
+            console.log("Received message from VM:", event.data);
+        };
+
+        // When the WebSocket connection is closed, log it to the console
+        socket.onclose = function(event) {
+            console.log("WebSocket connection closed:", event);
+        };
+    }
+
+    function rotateNeedle(needle, angle) {
+        needle.style.transform = 'rotate(' + angle + 'deg)';
+    }
+
+    let angle = 0;
+    let speed = 0.5;
+    let maxAngle = 0;
+
+  function updateMaxAngle() {
+    $.ajax({
+        type: "POST",
+        url: "/Home/ShowConsumptionValue",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        data: JSON.stringify(@Model.IdTask),
+        success: function (data) {
+        let newMaxAngle = parseInt(data);
+        if (!isNaN(newMaxAngle) && newMaxAngle !== maxAngle) {
+            maxAngle = newMaxAngle;
+            rotateNeedle(document.querySelector('.needle'), 0); // reseting the angle of the needle (may change to instead to start from the current place)
+            angle = 0; // reset the angle variable (may change to instead to start from the current angle)
+            updateConsumptionMeaming();
+        }
+        },
+
+        error: function () {
+            console.log("Error retrieving new max angle.");
+        }
+    });
+}
+
+
+setInterval(function () {
+    if (angle < maxAngle) {
+        angle += speed;
+        rotateNeedle(document.querySelector('.needle'), angle);
+    }
+}, 10);
+
+function updateConsumptionMeaming()
+{
+    if(maxAngle < 45)
+    {
+        document.getElementById("consumptionValueMeaning").innerHTML = "Very low";
+    }
+    if(maxAngle < 90 && maxAngle > 45)
+    {
+        document.getElementById("consumptionValueMeaning").innerHTML = "Very low";
+
+        setTimeout(function() {
+            document.getElementById("consumptionValueMeaning").innerHTML = "Low";
+        }, 1000);
+    }
+    if(maxAngle < 135 && maxAngle > 90)
+    {
+        document.getElementById("consumptionValueMeaning").innerHTML = "Very low";
+
+        setTimeout(function() {
+            document.getElementById("consumptionValueMeaning").innerHTML = "Low";
+        }, 1000);
+
+        setTimeout(function() {
+            document.getElementById("consumptionValueMeaning").innerHTML = "Medium";
+        }, 2000);
+    }
+    if(maxAngle > 135)
+    {
+        document.getElementById("consumptionValueMeaning").innerHTML = "Very low";
+
+        setTimeout(function() {
+            document.getElementById("consumptionValueMeaning").innerHTML = "Low";
+        }, 1000);
+
+        setTimeout(function() {
+            document.getElementById("consumptionValueMeaning").innerHTML = "Medium";
+        }, 2000);
+
+        setTimeout(function() {
+            document.getElementById("consumptionValueMeaning").innerHTML = "High";
+        }, 3000);
+    }
+}
+
+
+</script>
+
+<button type="button" class="btn btn-success" onclick="showCode()">RUN</button>
+
+
+<br>
+
+<!--<textarea id="divResult" rows="20" cols="50" readonly></textarea>-->
+<div class="cmd">
+    <textarea class="textarea" id="divResult" readonly></textarea>
+</div>
+
+<div class="gauge-wrapper">
+    <div class="gauge four rischio3">
+        <div class="slice-colors">
+            <div class="st slice-item"></div>
+            <div class="st slice-item"></div>
+            <div class="st slice-item"></div>
+            <div class="st slice-item"></div>
+        </div>
+        <div class="needle"></div>
+        <div class="gauge-center">
+            <div class="label">Consumption</div>
+            <div class="number" id="consumptionValueMeaning">None</div>
+        </div>
+    </div>
+</div>
+

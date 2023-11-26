@@ -1,0 +1,60 @@
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model IEnumerable<AccountViewModel>
+
+@section header {
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GREENSPROUTS.</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Back to administrator page</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+}
+
+<h1>Users Information</h1>
+
+
+<form method="get">
+    <label for="nickname">Search by nickname:</label>
+    <input type="text" name="nickname" id="nickname" value="@HttpContextAccessor.HttpContext.Request.Query["nickname"]" />
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a href="/Admin/Users" class="btn btn-secondary">Reset search</a>
+    <a asp-action="CreateUser" class="btn btn-success">Create new user</a>
+    <a asp-action="ShutDownVM" class="btn btn-danger">SHUT DOWN VM</a>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nickname</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Nickname</td>
+                <td>@user.Email</td>
+                <td>@user.RoleName</td>
+                <td>
+                    <a asp-action="UpdateUser" asp-route-nickname="@user.Nickname" class="btn btn-primary">Update</a>
+                    <a asp-action="DeleteUser" asp-route-nickname="@user.Nickname" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

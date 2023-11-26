@@ -1,0 +1,116 @@
+@using test.Models
+
+@model TaskSolutionViewModel
+@{
+    ViewData["Title"] = "Task Solution";
+}
+
+@if (Model == null || 
+    Model.OptimalCodeByLanguages == null || 
+    Model.StepByStepInstructions == null ||
+    Model.TaskName == null
+    )
+{
+    <h1>Solution hasn't been added</h1>
+    return;
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/darcula.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+</head>
+
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="text-center mb-4">Solution for @Model.TaskName.ToLower() problem</h2>
+            </div>
+        </div>
+    </div>
+
+    <div style="display: flex;">
+        <div id="code-area" style="width:100%;"></div>
+    </div>
+    <div class="form-group">
+        <label for="languageSelect">Language:</label>
+        <select class="form-control" id="languageSelect">
+            <option value="cpp">C++</option>
+            <option value="python">Python</option>
+        </select>
+    </div><br>
+    <div>
+        <h2>Task instructions</h2>
+        <ol>
+            @foreach (var instruction in @Model.StepByStepInstructions)
+            { 
+                <li>@instruction</li>
+            }
+        </ol>
+
+    </div><br>
+    @if(Model.ReferenceShortName != null && Model.ReferencesToHelpfulPages != null) 
+    {
+        <div>
+            <h2>Links to useful pages</h2>
+            <ul>   
+                @for (int i = 0; i < @Model.ReferencesToHelpfulPages.Count; i++)
+                {
+                    <li><a href="@Model.ReferencesToHelpfulPages[i]">@Model.ReferenceShortName[i]</a></li>
+                }
+            </ul>
+        </div>
+    }
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/clike/clike.min.js"></script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/mode/python/python.min.js"
+        integrity="sha512-/mavDpedrvPG/0Grj2Ughxte/fsm42ZmZWWpHz1jCbzd5ECv8CB7PomGtw0NAnhHmE/lkDFkRMupjoohbKNA1Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    var startingCode = '';
+
+    var editor = CodeMirror(document.getElementById('code-area'), {
+        lineNumbers: true,
+        value: startingCode,
+        theme: 'darcula',
+        mode: 'text/x-c++src',
+        autoCloseBrackets: true,
+        indentUnit: 4
+    });
+
+    function updateLanguage() {
+        var language = document.getElementById('languageSelect').value;
+        if (language === 'cpp') {
+            editor.setOption('mode', 'text/x-c++src');
+            startingCode = '@Model.OptimalCodeByLanguages["C++"]';
+            startingCode = startingCode.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+            .replace(/&#xA;/g, '\n').replace(/&quot;/g, '"').replace(/&#x2B;/g, '+').replace(/&#x27;/g, "'");
+            editor.setValue(startingCode);
+        } else if (language === 'python') {
+            editor.setOption('mode', 'text/x-python');
+            startingCode = `print("Hello world!")`;
+            startingCode = '@Model.OptimalCodeByLanguages["Python"]';
+            startingCode = startingCode.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+            .replace(/&#xA;/g, '\n').replace(/&quot;/g, '"').replace(/&#x2B;/g, '+').replace(/&#x27;/g, "'");
+            editor.setValue(startingCode);
+        }
+    }
+    document.getElementById('languageSelect').addEventListener('change', updateLanguage);
+    updateLanguage();
+</script>

@@ -1,0 +1,33 @@
+@using System.Text.RegularExpressions;
+
+@model Article
+
+@if (Regex.IsMatch(Model.Description, "<[^>]+>"))
+{
+    <div style="text-align: center;">
+        @if(!string.IsNullOrEmpty(Model.ImageName))
+        {
+            <img src="/images/articles/@Model.ImageName" style="height:400px; width:auto; margin: 0 auto;" alt="Image"><br>
+        }
+        
+        <h1 style="font-size: 36px;">@Model.Title</h1><br>
+        <div style="text-align:left; font-size: 18px; line-height: 1.5;">
+            @Html.Raw(Model.Description)
+        </div>
+    </div>
+}
+else
+{
+    <div style="text-align: center;">
+        @if(!string.IsNullOrEmpty(Model.ImageName))
+        {
+            <img src="/images/articles/@Model.ImageName" style="height:400px; width:auto; margin: 0 auto;" alt="Image"><br>
+        }
+        <h1 style="font-size: 36px;">@Model.Title</h1><br>
+        <div style="text-align:left; font-size: 18px; line-height: 1.5;">
+            @Html.DisplayFor(model => model.Description)
+        </div>
+    </div>
+
+    
+}

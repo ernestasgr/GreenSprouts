@@ -1,0 +1,49 @@
+@{
+	ViewData["Title"] = "Account Page";
+}
+
+<div class="text-center">
+	@if (Model is IEnumerable<Account>)
+	{
+		<div class="text-left">
+            <table class="table">
+                <tr>
+                    <th>Nickname</th>
+                    <th>Email</th>
+                    <th>Hash</th>
+                    <th>Role</th>
+                    <th>Delete</th>
+                    <th>Edit</th>
+                </tr>
+                @foreach (var account in Model)
+                {
+                <tr>
+                    <td>@account.Nickname</td>
+                    <td>@account.Email</td>
+                    <td>@account.Hash</td>
+                    <td>@account.Role</td>
+                    <td><a href="/Account?delete=@account.Nickname">(delete)</a></td>
+                    <td><a href="/Account?edit=@account.Nickname">(edit)</a></td>
+                </tr>
+                }
+            </table>
+		</div>
+		<form method="post">
+			<input type="text" name="Nickname" placeholder="Nickname" /><br />
+			<input type="text" name="Email" placeholder="Email" /><br />
+            <input type="text" name="Hash" placeholder="Hash" /><br />
+            <input type="text" name="Role" placeholder="Role" /><br />
+			<button>Add User</button>
+		</form>
+	}
+	else if (Model is Account)
+	{
+		<form method="post">
+			<input type="text" name="Nickname" placeholder="Nickname" value="@Model.Nickname"/><br />
+			<input type="text" name="Email" placeholder="Email" value="@Model.Email"/><br />
+            <input type="text" name="Hash" placeholder="Hash" value="@Model.Hash"/><br />
+            <input type="text" name="Role" placeholder="Role" value="@Model.Role"/><br />
+			<button>Edit User</button>
+		</form>
+	}
+</div>

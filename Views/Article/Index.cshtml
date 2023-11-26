@@ -1,0 +1,54 @@
+@model ArticleViewModel
+
+<div style="display: flex; flex-direction: row; justify-content: flex-end; margin-bottom: 20px;">
+    <form method="post" asp-controller="Article" asp-action="OnSearch">
+        <div class="input-group rounded">
+            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" name="tag" style="font-size: 14px; padding: 0.375rem 0.75rem;" required/>
+            <span class="input-group-text border-0 bg-transparent" id="search-addon">
+               <button type="submit" class="btn btn-link"><i class="fas fa-search"></i></button>
+            </span>
+        </div>
+    </form>
+</div>
+
+@if (Model.Articles.Count == 0)
+{
+    <p>There are no articles with this keyword.</p>
+    return;
+}
+
+<div style="display: flex; flex-direction: column; align-items: flex-start;">
+    @foreach (var article in Model.Articles)
+    {
+        <div class="row no-gutters bg-light position-relative mb-4 w-100" style="border-radius: 4px; display: flex; flex: 1;">
+            <div class="col-md-3 d-flex align-items-center justify-content-center mb-md-0 p-md-4">
+                <img src="/images/articles/@article.ImageName" class="w-100" alt="..." style="border-radius: 4px; height: auto; width:auto; margin: 0 auto;">
+            </div>
+            <div class="col-md-9 position-static p-4 pl-md-0">
+                <p class="d-inline-block" style="font-family: 'PT Sans'; text-align: center; color: #333333; text-transform: uppercase; letter-spacing: 1px; background-color: #E3F5FD; border-radius: 4px; padding: 8px;">@article.Topic</p>
+                <h5 class="mt-0">@article.Title</h5>
+                <p>@article.ShortDescription</p>
+                <a class="stretched-link" asp-controller="Article" asp-action="View" asp-route-id="@article.Id">Go into article</a>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+<div class="row">
+    <div class="col-md-6">
+        <nav aria-label="Page navigation example">
+            <h5>Page</h5>
+            <ul class="pagination">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-controller="Article" asp-action="Index" asp-route-page="@i"
+                        asp-route-pagesize="@Model.ItemsPerPage">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>

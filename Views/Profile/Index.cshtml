@@ -1,0 +1,61 @@
+@using test.Models
+@using Microsoft.AspNetCore.Identity
+
+@model AccountViewModel
+@{
+    ViewData["Title"] = "User Profile Page";
+}
+
+<style>
+    .user-table {
+        width: 100%;
+        max-width: 500px;
+        margin-bottom: 20px;
+        border-collapse: collapse;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-table th,
+    .user-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .user-table th {
+        background-color: #343a40;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .user-table td {
+        background-color: #fff;
+    }
+
+    .user-table td:first-child {
+        font-weight: 600;
+        width: 150px;
+    }
+
+    .user-table td:last-child {
+        word-break: break-word;
+    }
+</style>
+
+<h1>User information</h1>
+<table class="user-table" style="margin: 0 auto;">
+    <tr>
+        <th>Nickname</th>
+        <td>@Model.Nickname</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>@Model.Email</td>
+    </tr>
+    <tr>
+        <th>Role</th>
+        <td>@Model.RoleName</td>
+    </tr>
+</table>

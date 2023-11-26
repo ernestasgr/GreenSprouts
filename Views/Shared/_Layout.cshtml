@@ -1,0 +1,497 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Green programming</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/test.styles.css" asp-append-version="true" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    @if (IsSectionDefined("header")) 
+    {
+        @RenderSection("header")
+    }
+    else 
+    {
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                <div class="container-fluid">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GREENSPROUTS.</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AboutUs">About us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Article" asp-action="Index">Articles</a>
+                            </li>
+
+                            @if(User.IsInRole("User") || User.IsInRole("Administrator"))
+                            {
+                                <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Index">User Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Task" asp-action="Index">Tasks</a>
+                                </li>
+                            }
+
+                            @if(User.IsInRole("Administrator"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                                </li>
+                            }   
+                        </ul>
+                        <ul class="navbar-nav">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">@User.Identity.Name</a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form method="post" asp-controller="Account" asp-action="Logout">
+                                                <button type="submit" class="dropdown-item">Log out</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Log in</a></li>
+                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Sign up</a></li>
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+    }
+    
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container text-center">
+            <span class="footer-text">&copy; 2023 - GREENSPROUTS. - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a></span>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg" style="border-radius: 30px;">
+        <div class="modal-content border-0 rounded-3 shadow-lg" style="background-color: #f8f8f8; border-radius: 30px;">
+        <div class="modal-header border-0 pb-0">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="font-size: 1.5rem;"></button>
+        </div>
+        <div class="modal-body p-4">
+        <h5 class="modal-title text-center mb-4" id="registerModalLabel" style="color: #010400; font-weight: 700; font-size: 28px;">Sign Up</h5>
+            <form id="registerForm">
+            <div class="mb-3">
+                <label for="nicknameInput" class="form-label" style="color: #010400; font-weight: 700;">Nickname</label>
+                <div class="input-group">
+                    <span class="input-group-text rounded-start bg-white border-0">
+                        <i class="fas fa-user" style="color: #357266;"></i>
+                    </span>
+                    <input type="text" class="form-control rounded-end border-0" id="nicknameInput" name="NickName" placeholder="Enter your nickname" style="background-color: #f8f8f8; color: #010400;" autocomplete="off">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="emailInput" class="form-label" style="color: #010400; font-weight: 700;">Email address</label>
+                <div class="input-group">
+                    <span class="input-group-text rounded-start bg-white border-0">
+                        <i class="fas fa-envelope" style="color: #357266;"></i>
+                    </span>
+                    <input type="email" class="form-control rounded-end border-0" id="emailInput" name="Email" placeholder="Enter your email address" style="background-color: #f8f8f8; color: #010400;" autocomplete="off">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="passwordInput" class="form-label" style="color: #010400; font-weight: 700;">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text rounded-start bg-white border-0">
+                        <i class="fas fa-lock" style="color: #357266;"></i>
+                    </span>
+                    <input type="password" class="form-control rounded-end border-0" id="passwordInput" name="Password" placeholder="Enter your password" style="background-color: #f8f8f8; color: #010400;" autocomplete="off">
+                </div>
+            </div>
+            <div id="error-message"></div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg w-100 py-3 mt-4" style="background-color: #357266; color: #fff; border-color: #357266; font-weight: 700; font-size: 18px; letter-spacing: 1px;">Sign Up</button>
+                </div>
+            </form>
+        </div>
+        </div>
+       </div>
+    </div>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" style="border-radius: 30px;">
+            <div class="modal-content border-0 rounded-3 shadow-lg" style="background-color: #f8f8f8; border-radius: 30px;">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="font-size: 1.5rem;"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <h5 class="modal-title text-center mb-4" id="loginModalLabel" style="color: #010400; font-weight: 700; font-size: 28px;">Log In</h5>
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="nicknameInput" class="form-label" style="color: #010400; font-weight: 700;">Nickname</label>
+                            <div class="input-group">
+                                <span class="input-group-text rounded-start bg-white border-0">
+                                    <i class="fas fa-user" style="color: #357266;"></i>
+                                </span>
+                                <input type="text" class="form-control rounded-end border-0" id="nickname" name="NickName" placeholder="Enter your nickname" style="background-color: #f8f8f8; color: #010400;" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="passwordInput" class="form-label" style="color: #010400; font-weight: 700;">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text rounded-start bg-white border-0">
+                                    <i class="fas fa-lock" style="color: #357266;"></i>
+                                </span>
+                                <input type="password" class="form-control rounded-end border-0" id="password" name="Password" placeholder="Enter your password" style="background-color: #f8f8f8; color: #010400;" autocomplete="off">
+                            </div>
+                            <div class="mt-2">
+                                <a href="#" id="forgot-password-link" style="color: #357266; font-weight: 700;">Forgot password?</a>
+                            </div>
+                        </div>
+                        <div id="error-message1"></div>
+                        <div class="text-center">
+                            <button type="submit" id="send-email-btn" class="btn btn-primary btn-lg w-100 py-3 mt-4" style="background-color: #357266; color: #fff; border-color: #357266; font-weight: 700; font-size: 18px; letter-spacing: 1px;">Login</button>
+                        </div>
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <div class="text-center text-muted delimiter" style="color: #357266; font-weight: 500; font-size: 20px; margin-bottom: 15px;">or use a social network</div>
+                            <div class="button-container d-flex justify-content-center">
+                            <div class="g_id_signin"
+                                data-type="standard"
+                                data-shape="rectangular"
+                                data-theme="outline"
+                                data-text="signin_with"
+                                data-size="large"
+                                data-logo_alignment="left">
+                            <div id="g_id_onload"
+                                data-client_id="1071571767390-b613bhmpe0guou48p7pat55d8o2d7sr2.apps.googleusercontent.com"
+                                data-callback="handleCredentialResponse"
+                                data-context="signin"
+                                data-ux_mode="popup"
+                                data-auto_promt="false">
+                            </div>
+                            </div>
+                        </div>
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="border-radius: 30px;">
+        <div class="modal-content border-0 rounded-3 shadow-lg" style="background-color: #f8f8f8; border-radius: 30px;">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="font-size: 1.5rem;"></button>
+            </div>
+            <div class="modal-body p-4">
+                <h5 class="modal-title text-center mb-4" id="forgotPasswordModalLabel" style="color: #010400; font-weight: 700; font-size: 28px;">Forgot Password</h5>
+                <form id="forgotPasswordForm">
+                    <div class="mb-3">
+                        <label for="emailInput" class="form-label" style="color: #010400; font-weight: 700;">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text rounded-start bg-white border-0">
+                                <i class="fas fa-envelope" style="color: #357266;"></i>
+                            </span>
+                            <input type="email" class="form-control rounded-end border-0" id="email" name="Email" placeholder="Enter your email address" style="background-color: #f8f8f8; color: #010400;" autocomplete="off">
+                        </div>
+                    </div>
+                    <div id="error-message2"></div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 py-3 mt-4" style="background-color: #357266; color: #fff; border-color: #357266; font-weight: 700; font-size: 18px; letter-spacing: 1px;">Send Email</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="border-radius: 30px;">
+        <div class="modal-content border-0 rounded-3 shadow-lg" style="background-color: #f8f8f8; border-radius: 30px;">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="font-size: 1.5rem;"></button>
+            </div>
+            <div class="modal-body p-4">
+                <h5 class="modal-title text-center mb-4" id="confirmationModalLabel" style="color: #010400; font-weight: 700; font-size: 28px;">Confirmation</h5>
+                <p class="text-center mb-4" style="color: #010400; font-size: 18px;">If an email exists the temporary password will been sent to your email address shortly. Please check your inbox and spam folder.</p>
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary btn-lg w-100 py-3 mt-4" data-bs-dismiss="modal" style="background-color: #357266; color: #fff; border-color: #357266; font-weight: 700; font-size: 18px; letter-spacing: 1px;">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="googleRegisterModal" tabindex="-1" aria-labelledby="googleRegisterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" style="border-radius: 30px;">
+            <div class="modal-content border-0 rounded-3 shadow-lg" style="background-color: #f8f8f8; border-radius: 30px;">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="font-size: 1.5rem;"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <h5 class="modal-title text-center mb-4" id="loginModalLabel" style="color: #010400; font-weight: 700; font-size: 28px;">Register</h5>
+                    <form id="googleRegisterForm">
+                        <div class="mb-3">
+                            <label for="nicknameInput" class="form-label" style="color: #010400; font-weight: 700;">Nickname</label>
+                            <div class="input-group">
+                                <span class="input-group-text rounded-start bg-white border-0">
+                                    <i class="fas fa-user" style="color: #357266;"></i>
+                                </span>
+                                <input type="text" class="form-control rounded-end border-0" id="nickname" name="NickName" placeholder="Enter your nickname" style="background-color: #f8f8f8; color: #010400;" autocomplete="off">
+                            </div>
+                        </div>         
+                        <div id="error-message3"></div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 py-3 mt-4" style="background-color: #357266; color: #fff; border-color: #357266; font-weight: 700; font-size: 18px; letter-spacing: 1px;">Register</button>
+                        </div>                      
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script >
+        var dropdownMenu = document.querySelector('.dropdown-menu');
+        var dropdownToggle = document.querySelector('.dropdown-toggle');
+        dropdownToggle.addEventListener('mouseover', function () {
+            dropdownMenu.classList.add('show');
+        });
+        dropdownToggle.addEventListener('mouseout', function () {
+            dropdownMenu.classList.remove('show');
+        });
+        dropdownMenu.addEventListener('mouseover', function () {
+            dropdownMenu.classList.add('show');
+        });
+        dropdownMenu.addEventListener('mouseout', function () {
+            dropdownMenu.classList.remove('show');
+        });
+        $('#registerForm').submit(function (event) {
+            event.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                type: 'POST',
+                url: '/register',
+                data: formData,
+                success: function (response) {
+                    $('#registerModal').modal('hide');
+                },
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        var errors = JSON.parse(xhr.responseText);
+                        var errorMessage = '<ul class="error-list">';
+                        for (var i = 0; i < errors.length; i++) {
+                            errorMessage += '<li>' + errors[i] + '</li>';
+                        }
+                        errorMessage += '</ul>';
+                        $('#error-message').addClass('text-danger').html(errorMessage);
+                    } else if (xhr.status === 409) {
+                        $('#error-message').addClass('text-danger').text(xhr.responseText);
+                    }
+                }
+            });
+        });
+        $('#registerModal').on('show.bs.modal', function () {
+            $('#error-message').empty();
+            $('#registerForm')[0].reset();
+        });
+
+        $('#loginModal').on('show.bs.modal', function () {
+            $('#error-message1').empty();
+            $('#loginForm')[0].reset();
+        });
+
+        $('#forgotPasswordModal').on('show.bs.modal', function () {
+            $('#error-message2').empty();
+            $('#forgotPasswordForm')[0].reset();
+        });
+
+        $(document).ready(function () {
+            $('#loginForm').submit(function (event) {
+                event.preventDefault();
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: '/login',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        var nickname = response.nickname;
+                        $('#User').text(nickname);
+                        $('#loginModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                    if (xhr.status === 400) {
+                        var errors = JSON.parse(xhr.responseText);
+                        var errorMessage = '<ul class="error-list">';
+                        for (var i = 0; i < errors.length; i++) {
+                            errorMessage += '<li>' + errors[i] + '</li>';
+                        }
+                        errorMessage += '</ul>';
+                        $('#error-message1').addClass('text-danger').html(errorMessage);
+                    } else if (xhr.status === 409) {
+                        $('#error-message1').addClass('text-danger').text(xhr.responseText);
+                    }
+                }
+                });
+            });
+        });
+
+        $(document).ready(function() {
+            $('#forgot-password-link').click(function() {
+                $('#loginModal').modal('hide');
+                $('#forgotPasswordModal').modal('show');
+            });
+        });
+
+        $('#forgotPasswordForm').submit(function (event) {
+            event.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                type: 'POST',
+                url: '/forgotPassword',
+                data: formData,
+                success: function (response) {
+                    $('#forgotPasswordModal').modal('hide');
+                    $('#confirmationModal').modal('show');
+                },
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        var errors = JSON.parse(xhr.responseText);
+                        var errorMessage = '<ul class="error-list">';
+                        for (var i = 0; i < errors.length; i++) {
+                            errorMessage += '<li>' + errors[i] + '</li>';
+                        }
+                        errorMessage += '</ul>';
+                        $('#error-message2').addClass('text-danger').html(errorMessage);
+                    } else if (xhr.status === 409) {
+                        $('#error-message2').addClass('text-danger').text(xhr.responseText);
+                    }
+                }
+            });
+        });     
+
+        function handleCredentialResponse(response)
+        {
+            const responsePayload = decodeJwtResponse(response.credential);
+
+            //console.log("ID: " + responsePayload.sub); Nesu tikras ar galima saugot pagal google nuostatus
+            //console.log("Image URL: " + responsePayload.picture); Gal prireiks ateityje
+            console.log("Email: " + responsePayload.email);   
+
+            $.ajax({
+                type: 'POST',
+                url: '/checkEmailExists',
+                data: {email: responsePayload.email},
+                success: function (response) {
+                    $.ajax({
+                    url: '/googleLogin',
+                    type: 'POST',
+                    data: {email: responsePayload.email},
+                    success: function (response) {
+                        var nickname = response.nickname;
+                        $('#User').text(nickname);
+                        $('#loginModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                    if (xhr.status === 400) {
+                        var errors = JSON.parse(xhr.responseText);
+                        var errorMessage = '<ul class="error-list">';
+                        for (var i = 0; i < errors.length; i++) {
+                            errorMessage += '<li>' + errors[i] + '</li>';
+                        }
+                        errorMessage += '</ul>';
+                        $('#error-message1').addClass('text-danger').html(errorMessage);
+                    } else if (xhr.status === 409) {
+                        $('#error-message1').addClass('text-danger').text(xhr.responseText);
+                    }
+                }
+                });
+                },
+                error: function (xhr) {
+                    $('#loginModal').modal('hide');
+                    $('#googleRegisterModal').modal('show');    
+
+                    $(document).ready(function () {
+                        $('#googleRegisterForm').submit(function (event) {  
+                        event.preventDefault();
+                        var formData = $(this).serialize();
+                        $.ajax({
+                            url: '/googleRegister',
+                            type: 'POST',
+                            data: {email: responsePayload.email, nickname: formData},
+                            success: function (response) {
+                                var nickname = response.nickname;
+                                $('#User').text(nickname);
+                                $('#googleRegisterModal').modal('hide');
+                                location.reload();
+                            },
+                                error: function (xhr) {
+                                if (xhr.status === 400) {
+                                var errors = JSON.parse(xhr.responseText);
+                                var errorMessage = '<ul class="error-list">';
+                                for (var i = 0; i < errors.length; i++) {
+                                    errorMessage += '<li>' + errors[i] + '</li>';
+                                }
+                                errorMessage += '</ul>';
+                                $('#error-message3').addClass('text-danger').html(errorMessage);
+                            } else if (xhr.status === 409) {
+                                $('#error-message3').addClass('text-danger').text(xhr.responseText);
+                        }
+                    }
+                    });
+                });
+                });
+
+            }
+        });                 
+        }    
+
+        function decodeJwtResponse(data)
+        {
+            var tokens = data.split(".");
+            return JSON.parse(atob(tokens[1]))
+        }
+   
+        </script> 
+</body>
+</html>
